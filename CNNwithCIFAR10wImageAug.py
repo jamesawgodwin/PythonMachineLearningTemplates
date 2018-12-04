@@ -22,6 +22,7 @@ from keras.layers import Dropout
 from keras.layers import Flatten
 from keras.constraints import maxnorm
 from keras.optimizers import SGD
+from keras.optimizers import Adam
 from keras.layers.convolutional import Conv2D
 from keras.layers.convolutional import MaxPooling2D
 from keras.utils import np_utils
@@ -69,11 +70,12 @@ classifier.add(Dense(512, activation='relu', kernel_constraint=maxnorm(3)))
 classifier.add(Dropout(0.5))
 classifier.add(Dense(num_classes, activation='softmax'))
 # Compile model
-epochs = 1
+epochs = 2
 lrate = 0.01
 decay = lrate/epochs
-sgd = SGD(lr=lrate, momentum=0.9, decay=decay, nesterov=False)
-classifier.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+adm = Adam(lr=lrate, decay=decay)
+#sgd = SGD(lr=lrate, momentum=0.9, decay=decay, nesterov=False)
+classifier.compile(loss='categorical_crossentropy', optimizer=adm, metrics=['accuracy'])
 print(classifier.summary())
 
 #image augmentation
@@ -90,14 +92,14 @@ datagen = ImageDataGenerator(
 # (std, mean, and principal components if ZCA whitening is applied)
 datagen.fit(X_train)
 
-################################WHAT ABOUT X_test and y_test?
+validation_data=(X_test,y_test)
 
 # fits the model on batches with real-time data augmentation:
 classifier.fit_generator(datagen.flow(X_train, y_train, batch_size=32),
                     steps_per_epoch=len(X_train) / 32, epochs=epochs)
 
 # Final evaluation of the model
-scores = classifier.evaluate(X_test, y_test, verbose=0)
+scores = classifier.evaluate(X_test, y_test, verbose=1)
 print("Accuracy: %.2f%%" % (scores[1]*100))
 
 # =============================================================================
