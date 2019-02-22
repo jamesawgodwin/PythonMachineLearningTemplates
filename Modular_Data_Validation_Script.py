@@ -38,3 +38,4 @@ def check_relevant_data(directory):
         get_upload_date(file)
         
         print("\n")
+#check_relevant_data(full path here)
