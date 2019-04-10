@@ -123,4 +123,6 @@ classifier.fit(customers, is_fraud, batch_size = 1, epochs = 2)
 # Predicting the probabilities of frauds
 y_pred = classifier.predict(customers)
 y_pred = np.concatenate((dataset.iloc[:, 0:1].values, y_pred), axis = 1)
+
+# sort np array by index 1 (probability of being a cheater)
 y_pred = y_pred[y_pred[:, 1].argsort()]
