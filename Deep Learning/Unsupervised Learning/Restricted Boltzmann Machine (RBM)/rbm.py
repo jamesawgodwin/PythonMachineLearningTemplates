@@ -73,6 +73,10 @@ class RBM():
         self.W += (torch.mm(v0.t(),ph0) - torch.mm(vk.t(),phk)).t()
         self.b += torch.sum((v0 - vk), 0)
         self.a += torch.sum((ph0 - phk), 0)
+    def predict( self, x): # x: visible nodes
+        _, h = self.sample_h( x)
+        _, v = self.sample_v( h)
+        return v
 
 # number of visible nodes = number of total movies -> max size
 # more robust than saying nb.movies -> 1692
